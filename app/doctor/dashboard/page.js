@@ -104,16 +104,32 @@ export default function DoctorDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-green-600 text-white p-4 shadow-md">
+      <header className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 shadow-lg">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Dashboard - Bác Sĩ</h1>
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Dashboard</h1>
+              <p className="text-sm text-green-100">Bác sĩ</p>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
-            <span>Xin chào, {doctor?.full_name}</span>
+            <div className="text-right hidden md:block">
+              <p className="text-sm text-green-100">Xin chào,</p>
+              <p className="font-semibold">{doctor?.full_name}</p>
+            </div>
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+              className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-xl"
             >
-              Đăng xuất
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>Đăng xuất</span>
             </button>
           </div>
         </div>
@@ -122,8 +138,15 @@ export default function DoctorDashboard() {
       <div className="container mx-auto p-6">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Thông tin cá nhân */}
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4 text-green-600">Thông tin cá nhân</h2>
+          <div className="bg-white p-6 rounded-xl shadow-lg card-hover animate-fadeIn">
+            <div className="flex items-center mb-4">
+              <div className="p-3 bg-green-100 rounded-lg">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold ml-3 text-green-600">Thông tin cá nhân</h2>
+            </div>
             <div className="space-y-2">
               <p><strong>Họ tên:</strong> {doctor?.full_name}</p>
               <p><strong>Chuyên khoa:</strong> {doctor?.specialty}</p>
