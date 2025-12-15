@@ -1,13 +1,23 @@
-# Hệ Thống Quản Lý Lịch Hẹn Y Tế
+# 🏥 Hệ Thống Quản Lý Lịch Hẹn Y Tế
 
-Ứng dụng web đơn giản để quản lý lịch hẹn giữa bệnh nhân và bác sĩ, sử dụng Next.js và Supabase.
+Ứng dụng web quản lý lịch hẹn giữa bệnh nhân và bác sĩ với đầy đủ tính năng từ đặt lịch, xác nhận, khám bệnh đến ghi hồ sơ bệnh án. Xây dựng bằng Next.js 15 và Supabase PostgreSQL.
+
+## ✨ Điểm nổi bật
+
+- 🎨 **Giao diện hiện đại** với Tailwind CSS, gradient, animations
+- 📱 **Responsive design** hoạt động mượt trên mọi thiết bị
+- ⚡ **Real-time data** từ Supabase PostgreSQL
+- 🔐 **Phân quyền rõ ràng** giữa bệnh nhân và bác sĩ
+- 📋 **Quản lý đầy đủ** từ đặt lịch đến hồ sơ bệnh án
+- 🎯 **UX tối ưu** với loading states, validations, animations
 
 ## 🚀 Công nghệ sử dụng
 
-- **Next.js 15** (App Router)
-- **JavaScript**
-- **Tailwind CSS**
-- **Supabase** (PostgreSQL)
+- **Next.js 15** - React Framework với App Router
+- **JavaScript** - ES6+, không dùng TypeScript
+- **Tailwind CSS v4** - Utility-first CSS với custom animations
+- **Supabase** - PostgreSQL database, REST API
+- **localStorage** - Quản lý authentication state (học tập)
 
 ## 📋 Các bước cài đặt
 
@@ -49,76 +59,152 @@ Truy cập: http://localhost:3000
 
 ## 📱 Chức năng
 
-### Bệnh nhân:
+### 🩺 Bệnh nhân (Patient):
 - ✅ Đăng ký/Đăng nhập
-- ✅ Xem thông tin cá nhân
-- ✅ Xem danh sách bác sĩ
-- ✅ Xem lịch hẹn của mình
-- 🔄 Đặt lịch hẹn mới (coming soon)
-- 🔄 Hủy lịch hẹn (coming soon)
+- ✅ Xem và cập nhật thông tin cá nhân
+- ✅ Xem danh sách bác sĩ theo chuyên khoa
+- ✅ Đặt lịch hẹn mới với validation đầy đủ
+- ✅ Xem danh sách lịch hẹn của mình
+- ✅ Hủy lịch hẹn (chỉ lịch pending/confirmed)
+- ✅ Xem hồ sơ bệnh án và lịch sử khám bệnh
+- ✅ Xem chi tiết chẩn đoán và điều trị
 
-### Bác sĩ:
+### 👨‍⚕️ Bác sĩ (Doctor):
 - ✅ Đăng ký/Đăng nhập
-- ✅ Xem thông tin cá nhân
-- ✅ Xem lịch làm việc
+- ✅ Xem và cập nhật thông tin cá nhân
+- ✅ Quản lý lịch làm việc (CRUD - Thêm/Sửa/Xóa)
 - ✅ Xem danh sách lịch hẹn
 - ✅ Xác nhận/Từ chối lịch hẹn
-- 🔄 Thêm lịch làm việc (coming soon)
-- 🔄 Ghi hồ sơ bệnh án (coming soon)
+- ✅ Ghi hồ sơ bệnh án (chẩn đoán + điều trị)
+- ✅ Chỉnh sửa hồ sơ bệnh án đã tạo
+- ✅ Tự động chuyển trạng thái lịch hẹn thành "completed"
 
 ## 🗂️ Cấu trúc thư mục
 
 ```
 appointment/
 ├── app/
+│   ├── globals.css              # Custom CSS + Tailwind + Animations
+│   ├── layout.js                # Root layout
+│   ├── page.js                  # Home page (redirect to login)
 │   ├── login/
-│   │   └── page.js          # Trang đăng nhập/đăng ký
+│   │   └── page.js              # Đăng nhập/Đăng ký
 │   ├── patient/
-│   │   └── dashboard/
-│   │       └── page.js      # Dashboard bệnh nhân
-│   ├── doctor/
-│   │   └── dashboard/
-│   │       └── page.js      # Dashboard bác sĩ
-│   └── page.js              # Trang chủ (redirect to login)
+│   │   ├── dashboard/
+│   │   │   └── page.js          # Dashboard bệnh nhân
+│   │   ├── book-appointment/
+│   │   │   └── page.js          # Đặt lịch hẹn
+│   │   ├── medical-records/
+│   │   │   └── page.js          # Xem hồ sơ bệnh án
+│   │   └── profile/
+│   │       └── page.js          # Cập nhật thông tin
+│   └── doctor/
+│       ├── dashboard/
+│       │   └── page.js          # Dashboard bác sĩ
+│       ├── schedule/
+│       │   └── page.js          # Quản lý lịch làm việc
+│       ├── medical-records/
+│       │   └── page.js          # Ghi hồ sơ bệnh án
+│       └── profile/
+│           └── page.js          # Cập nhật thông tin
 ├── utils/
-│   └── supabase.js          # Supabase client config
+│   └── supabase.js              # Supabase client config
 ├── database/
-│   └── schema.sql           # Database schema & sample data
-└── .env.local               # Environment variables
+│   └── schema.sql               # Database schema + sample data
+├── .env.local                   # Environment variables
+├── package.json
+├── next.config.mjs
+└── tailwind.config.js
 ```
 
 ## 📊 Database Schema
 
-Xem sơ đồ database đầy đủ trong file `database/schema.sql`
+### Bảng dữ liệu (6 tables):
+
+1. **users** - Tài khoản người dùng (email, password, role)
+2. **patients** - Thông tin bệnh nhân (full_name, gender, DOB, phone, address)
+3. **doctors** - Thông tin bác sĩ (full_name, specialty, phone, description)
+4. **appointments** - Lịch hẹn (date, time, status, note)
+5. **working_schedules** - Lịch làm việc bác sĩ (work_date, start_time, end_time)
+6. **medical_records** - Hồ sơ bệnh án (diagnosis, treatment)
+
+### ENUM Types:
+- `user_role`: 'patient', 'doctor'
+- `appointment_status`: 'pending', 'confirmed', 'cancelled', 'completed'
+
+### Relationships:
+- `users` 1:1 `patients`/`doctors`
+- `doctors` 1:N `working_schedules`
+- `patients` 1:N `appointments`
+- `doctors` 1:N `appointments`
+- `appointments` 1:1 `medical_records`
+
+Xem chi tiết schema trong file [database/schema.sql](database/schema.sql)
 
 ## ⚠️ Lưu ý
 
-- **CHỈ DÙNG CHO HỌC TẬP**: Mật khẩu lưu plain text, không hash
-- **KHÔNG DEPLOY PRODUCTION**: Không bảo mật cho môi trường thực tế
-- Dữ liệu mẫu đã được tạo sẵn để test
+- **⚠️ CHỈ DÙNG CHO HỌC TẬP**: 
+  - Mật khẩu lưu **plain text**, không hash
+  - Authentication đơn giản qua localStorage
+  - Không có email verification
+  
+- **🚫 KHÔNG DEPLOY PRODUCTION**: 
+  - Không bảo mật cho môi trường thực tế
+  - Cần implement JWT, bcrypt, session management
+  
+- **✅ Dữ liệu mẫu**: 
+  - Đã tạo sẵn 4 tài khoản test (2 patient, 2 doctor)
+  - Có lịch hẹn và lịch làm việc mẫu
 
-## 🔜 Tính năng sắp tới
+## 🎨 UI/UX Features
 
-- [ ] Trang đặt lịch hẹn cho bệnh nhân
-- [ ] Chức năng hủy lịch hẹn
-- [ ] Quản lý lịch làm việc cho bác sĩ
-- [ ] Ghi hồ sơ bệnh án
-- [ ] Cập nhật thông tin cá nhân
-- [ ] Thống kê và báo cáo
+- ✨ **Custom animations**: fadeIn, slideIn, shake, pulse
+- 🌈 **Gradient designs**: Buttons, headers, cards
+- 🎯 **Interactive elements**: Hover effects, transforms
+- 📱 **Responsive**: Mobile-first design
+- ⚡ **Loading states**: Spinners cho async operations
+- ✅ **Validation**: Form validation với error messages
+- 🎭 **Status badges**: Color-coded appointment statuses
+
+## 🔜 Tính năng nâng cao (Future roadmap)
+
+- [ ] 🔐 JWT authentication + bcrypt password hashing
+- [ ] 📧 Email notifications khi có lịch hẹn mới
+- [ ] 📊 Dashboard với charts và thống kê
+- [ ] 🔍 Search và filter lịch hẹn
+- [ ] 📅 Calendar view cho lịch hẹn
+- [ ] 💬 Real-time chat giữa bác sĩ và bệnh nhân
+- [ ] 📄 Export PDF cho hồ sơ bệnh án
+- [ ] 🌐 Multi-language support (EN/VI)
+- [ ] 📸 Upload ảnh profile
+- [ ] ⭐ Rating và review bác sĩ
+
+## 📄 License
+
+MIT License - Dự án học tập tại VKU (Đại học Công nghệ Vinh)
 
 ---
 
-## Learn More
+## 💡 Tips
 
-To learn more about Next.js, take a look at the following resources:
+### Chạy development mode:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Build production (chỉ để test, không deploy):
+```bash
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Kiểm tra Supabase connection:
+Vào http://localhost:3000/login và thử đăng nhập bằng tài khoản test
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📚 Learn More
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Tailwind CSS](https://tailwindcss.com/docs)
