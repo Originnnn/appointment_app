@@ -8,7 +8,8 @@ if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') {
   console.error('❌ GEMINI_API_KEY is not configured properly in .env.local');
 }
 
-const genAI = new GoogleGenerativeAI(apiKey || 'YOUR_API_KEY_HERE');
+// Use stable API version
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 // System prompt cho AI Medical Assistant
 const SYSTEM_PROMPT = `Bạn là trợ lý y tế AI thông minh của hệ thống quản lý lịch hẹn y tế. 
@@ -62,11 +63,44 @@ export async function POST(request) {
 
     console.log('🤖 AI Chat Request:', { message: message.substring(0, 50) + '...' });
 
-    // Get Gemini model
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-
     // Build context-aware prompt
     let fullPrompt = SYSTEM_PROMPT + '\n\n';
+
+    console.log('🤖 AI Chat Request:', { message: message.substring(0, 50) + '...' });
+
+    // Call Gemini API directly using REST (more reliable)
+    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
+    
+    const requestBody = {
+      contents: [{
+        parts: [{
+          text: fullPrompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 2048,
+      }
+    };
+
+    const apiResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      console.error('API Error:', errorData);
+      throw new Error(errorData.error?.message || 'API request failed');
+    }
+
+    const data = await apiResponse.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
 
     // Add user context if available
     if (context) {
@@ -120,10 +154,39 @@ export async function POST(request) {
     fullPrompt += `=== CÂU HỎI CỦA BỆNH NHÂN ===\n${message}\n\n`;
     fullPrompt += `Hãy trả lời câu hỏi trên với vai trò trợ lý y tế AI, dựa trên context đã cung cấp.`;
 
-    // Generate response
-    const result = await model.generateContent(fullPrompt);
-    const response = await result.response;
-    const text = response.text();
+    // Call Gemini API directly using REST (more reliable)
+    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
+    
+    const requestBody = {
+      contents: [{
+        parts: [{
+          text: fullPrompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.7,
+        topK: 40,
+        topP: 0.95,
+        maxOutputTokens: 2048,
+      }
+    };
+
+    const apiResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      console.error('API Error:', errorData);
+      throw new Error(errorData.error?.message || 'API request failed');
+    }
+
+    const data = await apiResponse.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
 
     console.log('✅ AI Response generated successfully');
 
@@ -166,7 +229,7 @@ export async function GET() {
   return NextResponse.json({
     status: hasApiKey ? 'ok' : 'error',
     service: 'AI Medical Assistant',
-    model: 'gemini-pro',
+    model: 'gemini-1.5-flash',
     apiKeyConfigured: hasApiKey,
     message: hasApiKey 
       ? 'Service is ready' 
