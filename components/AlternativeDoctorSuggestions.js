@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Card from './ui/Card';
 import Button from './ui/Button';
 import Badge from './ui/Badge';
@@ -54,7 +54,7 @@ export default function AlternativeDoctorSuggestions({
   };
 
   // Auto-fetch on mount
-  useState(() => {
+  useEffect(() => {
     fetchAlternatives();
   }, []);
 

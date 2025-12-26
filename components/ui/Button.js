@@ -5,12 +5,15 @@ export default function Button({
   variant = "primary", // "primary", "secondary", "success", "danger", "ghost"
   size = "medium", // "small", "medium", "large"
   isLoading = false,
+  loading, // Extract to prevent passing to DOM
   disabled = false,
   fullWidth = false,
   className = "",
   ariaLabel,
   ...props
 }) {
+  // Use loading or isLoading
+  const loadingState = loading !== undefined ? loading : isLoading;
   const baseStyles = "font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2";
   
   const variants = {
@@ -33,13 +36,13 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled || isLoading}
+      disabled={disabled || loadingState}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`}
       aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
-      aria-busy={isLoading}
+      aria-busy={loadingState}
       {...props}
     >
-      {isLoading ? (
+      {loadingState ? (
         <>
           <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
