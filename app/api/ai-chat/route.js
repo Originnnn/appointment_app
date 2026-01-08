@@ -66,42 +66,6 @@ export async function POST(request) {
     // Build context-aware prompt
     let fullPrompt = SYSTEM_PROMPT + '\n\n';
 
-    console.log('🤖 AI Chat Request:', { message: message.substring(0, 50) + '...' });
-
-    // Call Gemini API directly using REST (more reliable)
-    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
-    
-    const requestBody = {
-      contents: [{
-        parts: [{
-          text: fullPrompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 2048,
-      }
-    };
-
-    const apiResponse = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!apiResponse.ok) {
-      const errorData = await apiResponse.json();
-      console.error('API Error:', errorData);
-      throw new Error(errorData.error?.message || 'API request failed');
-    }
-
-    const data = await apiResponse.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
-
     // Add user context if available
     if (context) {
       fullPrompt += '=== CONTEXT NGƯỜI DÙNG ===\n';
@@ -155,7 +119,7 @@ export async function POST(request) {
     fullPrompt += `Hãy trả lời câu hỏi trên với vai trò trợ lý y tế AI, dựa trên context đã cung cấp.`;
 
     // Call Gemini API directly using REST (more reliable)
-    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${apiKey}`;
     
     const requestBody = {
       contents: [{
